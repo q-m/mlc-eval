@@ -1,11 +1,11 @@
 
 export function load(url) {
   return (dispatch) => {
-    dispatch({type: 'FILE_LOADING', payload: {file: 'confusion'}});
+    dispatch({type: 'FILE_LOADING', payload: {id: 'confusion', url}});
     fetch(url)
       .then(response => response.text())
       .then(data => dispatch({type: 'CONFUSION_LOAD', payload: data}))
-      .then(data => dispatch({type: 'FILE_LOADED', payload: {file: 'confusion'}}))
+      .then(data => dispatch({type: 'FILE_LOADED', payload: {id: 'confusion'}}))
       .catch(err => console.log(err));
   };
 }

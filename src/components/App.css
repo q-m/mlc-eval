@@ -6,3 +6,23 @@
   right: 0;
   bottom: 0;
 }
+
+.App .FileDesc {
+  display: inline-block;
+  width: 9em;
+}
+
+.App .FileName {
+  font-family: monospace;
+  font-size: 75%;
+  opacity: 0.8;
+}
+
+.App .spinning {
+  animation: spinning infinite 5s linear;
+}
+
+@keyframes spinning {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
