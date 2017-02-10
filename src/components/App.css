@@ -1,0 +1,8 @@
+.App > div {
+  /* make single child (except nav) fullscreen */
+  position: fixed;
+  top: 51px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

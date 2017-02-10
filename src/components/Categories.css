@@ -1,0 +1,18 @@
+.Categories {
+}
+
+.Categories > * {
+  padding-right: 0 !important; /* sorry ... */
+}
+
+.CategoryList {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.CategoryList .list-group-item {
+  white-space: nowrap;
+}
+.CategoryList .badge {
+  position: absolute; /* don't break */
+  right: 10px;
+}
