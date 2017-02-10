@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Glyphicon, MenuItem, Nav, Navbar, NavDropdown, NavItem } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
+import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap'
 import './App.css'
 
 const FILE_DESC = {
@@ -53,6 +53,7 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
+              <IndexLinkContainer to={'/'}><NavItem>Summary</NavItem></IndexLinkContainer>
               <LinkContainer to={'/categories'}><NavItem>Categories</NavItem></LinkContainer>
               <LinkContainer to={'/confusion-matrix'}><NavItem>Confusion Matrix</NavItem></LinkContainer>
             </Nav>

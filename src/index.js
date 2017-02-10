@@ -6,8 +6,9 @@ import store from './store/index'
 import { load as loadConfusion } from './store/confusion'
 import { load as loadLabels } from './store/labels'
 
-import { Router, Route, browserHistory } from 'react-router'
+import { IndexRoute, Router, Route, browserHistory } from 'react-router'
 import App from './components/App'
+import Summary from './components/Summary'
 import Categories from './components/Categories'
 import Confusion from './components/Confusion'
 
@@ -24,6 +25,7 @@ ReactDOM.render((
   <Provider store={store}>
     <Router history={browserHistory}>
       <Route path='/' component={App}>
+        <IndexRoute component={Summary} />
         <Route path='categories(/:ida)' component={Categories}>
           <Route path=':idb' component={Categories} />
         </Route>
