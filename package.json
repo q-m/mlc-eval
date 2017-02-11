@@ -1,6 +1,6 @@
 {
-  "name": "ml-eval",
-  "description": "user-interface for evaluating machine learning results",
+  "name": "mlc-eval",
+  "description": "user-interface for evaluating machine learning classification results",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {

@@ -49,7 +49,7 @@ class App extends Component {
       <div className="App">
         <Navbar fluid inverse>
           <Navbar.Header>
-            <Navbar.Brand>ML-Eval</Navbar.Brand>
+            <Navbar.Brand>MLC-Eval</Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>

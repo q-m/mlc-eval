@@ -36,7 +36,7 @@ class Summary extends PureComponent {
     return (
       <div className='Summary container'>
         <Well>
-          <h2>Machine-learning evaluation <small>summary</small></h2>
+          <h2>Classification evaluation <small>summary</small></h2>
           <p>
             You have trained with <b>{nItems}</b> samples
             in <b>{usedLabels}</b> categories
