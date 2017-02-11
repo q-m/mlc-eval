@@ -1,3 +1,10 @@
 .Summary {
   margin-top: 5ex; /* because default layout is quite tight */
 }
+
+.Summary .table.ModelParams {
+  margin-bottom: 0;
+}
+.Summary .ModelParams tt {
+  font-size: 90%;
+}

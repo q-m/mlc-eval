@@ -5,9 +5,10 @@ import { IndexLinkContainer, LinkContainer } from 'react-router-bootstrap'
 import './App.css'
 
 const FILE_DESC = {
-  labels: 'Category Labels',
-  confusion: 'Confusion Matrix',
-  items: 'Training Data',
+  labels: 'Category labels',
+  confusion: 'Confusion matrix',
+  items: 'Training data',
+  model: 'Model properties',
 };
 
 const FileIcon = ({ status }) => (

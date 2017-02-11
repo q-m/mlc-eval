@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import store from './store/index'
 import { load as loadConfusion } from './store/confusion'
 import { load as loadLabels } from './store/labels'
+import { load as loadModel } from './store/model'
 
 import { IndexRoute, Router, Route, browserHistory } from 'react-router'
 import App from './components/App'
@@ -20,6 +21,7 @@ import './index.css'
 // load initial data
 store.dispatch(loadConfusion('/data/data.cm'));
 store.dispatch(loadLabels('/data/data.labels'));
+store.dispatch(loadModel('/data/data.model'));
 
 ReactDOM.render((
   <Provider store={store}>

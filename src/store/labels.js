@@ -18,7 +18,7 @@ export function reducer(state = initialState, action) {
     const newState = new Map();
     action.payload.trim().split("\n").forEach(l => {
       const i = l.indexOf(' ');
-      const id = parseInt(l.slice(0, i + 1), 10);
+      const id = parseInt(l.slice(0, i), 10);
       const name = l.slice(i + 1).trim();
       newState.set(id, name);
     });

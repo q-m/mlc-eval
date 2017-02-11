@@ -3,9 +3,10 @@ import thunk from 'redux-thunk'
 import { reducer as confusion } from './confusion'
 import { reducer as labels } from './labels'
 import { reducer as files } from './files'
+import { reducer as model } from './model'
 import windowSize, { createRemAction, createSizeAction, listenResize } from 'redux-windowsize'
 
-const reducer = combineReducers({confusion, labels, files, windowSize});
+const reducer = combineReducers({confusion, labels, files, model, windowSize});
 const store = createStore(reducer, applyMiddleware(thunk));
 
 // Update redux with current size.
