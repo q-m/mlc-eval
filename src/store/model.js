@@ -3,8 +3,15 @@
 export function load(url) {
   return (dispatch) => {
     dispatch({type: 'FILE_LOADING', payload: {id: 'model', url}});
-    fetch(url, {headers: {'Range': 'bytes=0-1000000'}})
-      .then(response => {
+    fetch(url, {headers: {'Range': 'bytes=0-10000'}})
+      .then(response => response.text())
+      .then(data => {
+        let idx = data.indexOf('\nw\n');
+        if (idx < 0) idx = data.indexOf('\nSV\n');
+        return data.slice(0, idx);
+      })
+      // streaming interface not widely supported yet
+      /* .then(response => {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let data = '';
@@ -21,7 +28,7 @@ export function load(url) {
           // next chunk
           return reader.read().then(processResult);
         });
-      })
+      }) */
       .then(data => dispatch({type: 'MODEL_LOAD', payload: data}))
       .then(data => dispatch({type: 'FILE_LOADED', payload: {id: 'model'}}))
       .catch(err => console.log(err));
