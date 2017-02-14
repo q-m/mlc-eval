@@ -11,7 +11,7 @@ class ModelParams extends PureComponent {
     const { model } = this.props;
     let rows = [];
     model.forEach((value, key) => {
-      if (key === 'label') return; // skip that one, we want different thing
+      if (key === 'label' || key === 'rho' || key === 'nr_sv') return; // skip that one, we want different thing
       rows.push(
         <tr key={key}>
           <th>{key}</th>
