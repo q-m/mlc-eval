@@ -19,6 +19,10 @@ show. But it provides a starting point with a summary, category overview and [Co
 
 ![](screenshots.gif)
 
+By default, the widely used iris dataset will be shown. It isn't a very good example, with
+just three classes. To load your own dataset, put your own `data.cm` and other files in
+`public/data/`, and add `?baseUrl=/data/data` to the url.
+
 
 # Files
 

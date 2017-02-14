@@ -19,9 +19,19 @@ import 'fixed-data-table/dist/fixed-data-table.css'
 import './index.css'
 
 // load initial data
-store.dispatch(loadConfusion('/data/data.cm'));
-store.dispatch(loadLabels('/data/data.labels'));
-store.dispatch(loadModel('/data/data.model'));
+// @todo move to more appropriate location
+function loadDefault() {
+  let baseUrl = '/example/iris';
+  if (window.location.search.startsWith('?baseUrl=')) {
+    baseUrl = window.location.search.slice(10);
+  }
+
+  store.dispatch(loadConfusion(baseUrl + '.cm'));
+  store.dispatch(loadLabels(baseUrl + '.labels'));
+  store.dispatch(loadModel(baseUrl + '.model'));
+}
+loadDefault();
+
 
 ReactDOM.render((
   <Provider store={store}>
