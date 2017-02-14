@@ -59,6 +59,7 @@ class App extends Component {
               <LinkContainer to={'/confusion-matrix'}><NavItem>Confusion Matrix</NavItem></LinkContainer>
             </Nav>
             <Nav pullRight>
+              <NavItem href='https://github.com/q-m/mlc-eval'>Help</NavItem>
               <FilesMenu title='Files' id='nav-files-menu' />
             </Nav>
           </Navbar.Collapse>

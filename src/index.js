@@ -7,7 +7,7 @@ import { load as loadConfusion } from './store/confusion'
 import { load as loadLabels } from './store/labels'
 import { load as loadModel } from './store/model'
 
-import { IndexRoute, Router, Route, browserHistory } from 'react-router'
+import { IndexRoute, Router, Route, hashHistory } from 'react-router'
 import App from './components/App'
 import Summary from './components/Summary'
 import Categories from './components/Categories'
@@ -21,7 +21,7 @@ import './index.css'
 // load initial data
 // @todo move to more appropriate location
 function loadDefault() {
-  let baseUrl = '/example/iris';
+  let baseUrl = (process.env.PUBLIC_URL || '') + '/example/iris';
   if (window.location.search.startsWith('?baseUrl=')) {
     baseUrl = window.location.search.slice(10);
   }
@@ -35,7 +35,7 @@ loadDefault();
 
 ReactDOM.render((
   <Provider store={store}>
-    <Router history={browserHistory}>
+    <Router history={hashHistory}>
       <Route path='/' component={App}>
         <IndexRoute component={Summary} />
         <Route path='categories(/:ida)' component={Categories}>

@@ -11,6 +11,8 @@ The current focus is on [LIBSVM][] and [LIBLINEAR][], which provide a convenient
 with [support vector machines](https://en.wikipedia.org/wiki/Support_vector_machine) on
 large datasets, but the approach should be applicable to other software and methods as well.
 
+Visit the [online app](https://q-m.github.io/mlc-eval/) directly.
+
 
 # Features
 
@@ -19,9 +21,24 @@ show. But it provides a starting point with a summary, category overview and [Co
 
 ![](screenshots.gif)
 
-By default, the widely used iris dataset will be shown. It isn't a very good example, with
-just three classes. To load your own dataset, put your own `data.cm` and other files in
-`public/data/`, and add `?baseUrl=/data/data` to the url.
+By default, the widely used iris dataset will be shown. It isn't a very good example to showcase
+this tool, with just three classes. To load your own dataset, put your own `data.cm` and other files
+in `public/data/`, and add `?baseUrl=/data/data` to the url.
+
+
+# Run
+
+The easiest way would be to visit the [hosted app](https://q-m.github.io/mlc-eval/) directly.
+
+To run this tool yourself, you'll need [Ruby][] to generate the confusion matrix (see below), and
+[Node.js][] to run the application. To run the application yourself:
+
+```
+$ npm install
+$ npm start
+```
+
+A web browser window will open on `http://localhost:3000/` .
 
 
 # Files
@@ -84,4 +101,5 @@ Sums for each line and column are at right and bottom.
 [LIBSVM]: https://www.csie.ntu.edu.tw/~cjlin/libsvm/
 [LIBLINEAR]: https://www.csie.ntu.edu.tw/~cjlin/liblinear/
 [Confusion matrix]: https://en.wikipedia.org/wiki/Confusion_matrix
+[Node.js]: https://nodejs.org/
 [Ruby]: http://www.ruby-lang.org/
