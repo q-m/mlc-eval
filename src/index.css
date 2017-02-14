@@ -4,6 +4,10 @@ body {
   font-family: sans-serif;
 }
 
+.table.no-head > tbody > tr:first-child > td, .table.no-head > tbody > tr:first-child > th {
+  border-top: none;
+}
+
 .spinning {
   animation: spinning infinite 5s linear;
 }

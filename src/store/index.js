@@ -9,10 +9,9 @@ import windowSize, { createRemAction, createSizeAction, listenResize } from 'red
 const reducer = combineReducers({confusion, labels, files, model, windowSize});
 const store = createStore(reducer, applyMiddleware(thunk));
 
-// Update redux with current size.
+// Update and watch window size
 store.dispatch(createSizeAction(window));
 store.dispatch(createRemAction(window));
-// Dispatch an action every 100ms when window size changes.
 listenResize(store, window, 100);
 
 export default store;

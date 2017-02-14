@@ -4,6 +4,8 @@ import { Well, Row, Col, Panel, Table } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './Summary.css'
 
+const pct = x => ( isNaN(x) ? x : ((x * 100).toFixed(1) + '%'));
+
 class ModelParams extends PureComponent {
   render() {
     const { model } = this.props;
@@ -18,14 +20,37 @@ class ModelParams extends PureComponent {
       );
     });
     return (
-      <Table className='ModelParams'>
+      <Table className='ModelParams no-head'>
         <tbody>{rows}</tbody>
       </Table>
     );
   }
 }
 
-const Qm = () => (<span className='spinning text-muted inline-block'>?</span>);
+class CategoryStats extends PureComponent {
+  render() {
+    return (
+      <Table className='CategoryStats no-head'>
+        <tbody>
+          <tr><th>Accuracy</th><td><tt>{ pct(this._getAccuracy()) || <Qm />}</tt></td></tr>
+        </tbody>
+      </Table>
+    );
+  }
+
+  // @todo move to separate stats module e.g. using reselect
+  _getAccuracy() {
+    const { confusion } = this.props;
+    if (!confusion[0]) return;
+    const nItems = confusion.slice(-1)[0].slice(-1)[0];
+    const nSuccess = confusion.slice(1, -1).reduce((r,row,i) => (
+      r + row[i + 1]
+    ), 0);
+    return 1.0 * nSuccess / nItems;
+  }
+}
+
+const Qm = ({dot}) => (<span className='spinning text-muted inline-block'>{dot ? '...' : '?'}</span>);
 
 class Summary extends PureComponent {
   render() {
@@ -44,12 +69,24 @@ class Summary extends PureComponent {
           </p>
         </Well>
         <Row>
-          {model.size > 0 ?
-            <Col sm={4}>
-              <Panel header={<h3>Model parameters</h3>}>
-                <ModelParams model={model} />
+          <Col sm={4}>
+            <Panel header={<h3>Model parameters</h3>}>
+              {model.size > 0
+                ? <ModelParams model={model} />
+                : files.files.model
+                ? <em className='text-muted'>Loading model <Qm dot /></em>
+                : <em className='text-muted'>Please load a model.</em>}
               </Panel>
-            </Col> : null}
+          </Col>
+          <Col sm={4}>
+            <Panel header={<h3>Statistics</h3>}>
+              {confusion.length
+                ? <CategoryStats confusion={confusion} />
+                : files.files.confusion
+                ? <em className='text-muted'>Loading confusion matrix <Qm dot /></em>
+                : <em className='text-muted'>Please load a confusion matrix.</em>}
+              </Panel>
+            </Col>
         </Row>
       </div>
     );
