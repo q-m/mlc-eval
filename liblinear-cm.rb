@@ -83,7 +83,7 @@ end
 
 
 labels, examples = load_problem(training_file)
-results = Liblinear.cross_validation(nfold, cfg, labels, examples)
+results = Liblinear.cross_validation(nfold, params, labels, examples)
 save_results(results_file, results) if results_file
 save_confusion(confusion_file, labels, results) if confusion_file
 
