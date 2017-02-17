@@ -5,6 +5,20 @@
 .Summary .table {
   margin-bottom: 0;
 }
-.Summary .td > tt {
-  font-size: 90%;
+.Summary td {
+  font-family: monospace;
+  font-size: 95%;
+}
+
+.Summary .CategoryStats tbody > tr > td {
+  text-align: right;
+}
+.Summary .CategoryStats tfoot > tr > th {
+  text-align: right;
+  font-weight: normal;
+  font-style: italic;
+  opacity: 0.8;
+}
+.Summary .CategoryStats tfoot > tr > th:after {
+  content: ' ↑';
 }

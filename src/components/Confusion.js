@@ -13,8 +13,8 @@ const MatrixCell = ({count, sum, self, ...props}) => {
   return (<Cell {...props} className={cls}>{count}</Cell>);
 };
 
-const _TitleCell = ({id, labels, dispatch, ...props}) => {
-  const label = labels.get(id) || id;
+const _TitleCell = ({cls, labels, dispatch, ...props}) => {
+  const label = labels.get(cls.label) || cls.label;
   return (<Cell {...props} style={{textAlign: 'left'}}>{label}</Cell>);
 };
 const TitleCell = connect(
@@ -24,10 +24,7 @@ const TitleCell = connect(
 class Confusion extends Component {
 
   render() {
-    const { confusion } = this.props;
-    const header = confusion[0] ? confusion[0].slice(1, -1) : [];
-    const rows = confusion.slice(1, -1);
-    const sumrow = confusion.slice(-1)[0] || [];
+    const { confusion: { count, matrix, classes } } = this.props;
 
     return (
       <div className='Confusion'>
@@ -35,7 +32,7 @@ class Confusion extends Component {
           rowHeight={30}
           headerHeight={30}
           footerHeight={30}
-          rowsCount={rows.length}>
+          rowsCount={classes.length}>
           <Column
             align='left'
             fixed={true}
@@ -43,22 +40,22 @@ class Confusion extends Component {
             allowCellsRecycling={true}
             header={<Cell>▾ actual | predicted ▸</Cell>}
             cell={({rowIndex, ...props}) => (
-              <TitleCell id={rows[rowIndex][0]} />
+              <TitleCell cls={classes[rowIndex]} />
             )}
             footer={<Cell><b>Σ</b></Cell>}
             />
-          {header.map((label, i) => (
+          {classes.map((cls,i) => (
             <Column
               align='center'
-              key={label}
+              key={cls.label}
               width={35}
               allowCellsRecycling={true}
-              header={<TitleCell id={label} />}
+              header={<TitleCell cls={cls} />}
               cell={({rowIndex, ...props}) => (
-                <MatrixCell {...props} count={rows[rowIndex][i + 1]} self={rowIndex === i} sum={rows[rowIndex].slice(-1)[0]} />
+                <MatrixCell {...props} count={matrix[rowIndex][i]} self={rowIndex === i} sum={cls.tp + cls.fn} />
               )}
               footer={({...props}) => (
-                <Cell {...props}>{sumrow[i + 1]}</Cell>
+                <Cell {...props}>{cls.tp + cls.fp}</Cell>
               )}
               />
           ))}
@@ -69,10 +66,10 @@ class Confusion extends Component {
             header={<Cell>Σ</Cell>}
             allowCellsRecycling={true}
             cell={({rowIndex, ...props}) => (
-              <Cell {...props}>{rows[rowIndex].slice(-1)[0]}</Cell>
+              <Cell {...props}>{classes[rowIndex].tp + classes[rowIndex].fn}</Cell>
             )}
             footer={({...props}) => (
-              <Cell {...props}>{sumrow.slice(-1)[0]}</Cell>
+              <Cell {...props}>{count}</Cell>
             )}
             />
           <Column width={15 /* to avoid scrollbar overlapping numbers */} />

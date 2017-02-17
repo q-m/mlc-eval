@@ -10,19 +10,81 @@ export function load(url) {
   };
 }
 
-const initialState = [];
-// [
-//   [  0, 1, 11, 14,  0 ],
-//   [  1, 5,  0,  1,  7 ],
-//   [ 11, 1, 17,  2, 20 ],
-//   [ 14, 0,  5, 10, 15 ],
-//   [  0, 6, 22, 13, 42 ],
-// ];
+const initialState = {
+  count: null,      // number of items
+  matrix: [],       // confusion matrix contents (without headers or sums)
+  classes: [],      // class labels and stats in matrix order (x- and y-axis) (array of objects)
+  stats: {
+    micro: {},      // micro-averaged statistics for all classes
+    macro: {},      // macro-averaged statistics for all classes
+  },
+};
+
+// @see https://en.wikipedia.org/wiki/Confusion_matrix
+// @see http://chrisalbon.com/machine-learning/precision_recall_and_F1_scores.html
+function computeDerivedStats({ tp, fn, fp, tn }) {
+    const accuracy  = 1.0 * (tp + tn) / (tp + fn + fp + tn);
+    const precision = 1.0 * tp / (tp + fp);
+    const recall    = 1.0 * tp / (tp + fn);
+    const f1        = 2.0 * tp / (2 * tp + fp + fn);
+    const mcc       = (tp * tn - fp * fn) / Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+    return { accuracy, precision, recall, f1, mcc };
+}
+
+function computeClassStats({ count, matrix, labels, actual, predicted }) {
+  return labels.map((label, i) => {
+    const p   = actual[i];          // positive observations
+    const n   = count - p;          // negative observations
+    const tp  = matrix[i][i];       // positive observations with positive predictions
+    const fn  = p - tp;             // positive observations with negative predictions
+    const fp  = predicted[i] - tp;  // negative observations with positive predictions
+    const tn  = n - fp;             // negative observations with negative predictions
+    return {
+      idx: i, label,
+      tp, fp, tn, fn,
+      ...computeDerivedStats({ tp, fp, tn, fn })
+    };
+  });
+}
+
+// compute macro-averaged statistics
+// @see http://rali.iro.umontreal.ca/rali/sites/default/files/publis/sokolovalapalme-jipm09.pdf
+function computeMacroStats({ count, classes }) {
+  const r = { accuracy: 0, precision: 0, recall: 0, f1: 0, mcc: 0 };
+  classes.forEach(c => {
+    Object.keys(r).forEach(stat => r[stat] += c[stat]);
+  });
+  Object.keys(r).forEach(stat => r[stat] /= classes.length);
+  return r;
+}
+
+// compute micro-averaged statistics
+function computeMicroStats({ count, classes }) {
+  const s = { tp: 0, fn: 0, fp: 0, tn: 0};
+  classes.forEach(c => {
+    Object.keys(s).forEach(stat => s[stat] += c[stat]);
+  });
+  return { ...s, ...computeDerivedStats(s) };
+}
 
 export function reducer(state = initialState, action) {
   switch(action.type) {
-  case 'CONFUSION_LOAD':
-    return action.payload.trim().split("\n").map(l => l.split(' ').map(s => parseInt(s, 10)));
+  case 'CONFUSION_LOAD': {
+    // read full matrix
+    const fullMatrix = action.payload.trim().split("\n").map(l => l.split(' ').map(s => parseInt(s, 10)));
+    // decompose into basic components
+    const count = fullMatrix.slice(-1)[0].slice(-1)[0];
+    const matrix = fullMatrix.slice(1, -1).map(a => a.slice(1, -1));
+    const labels = fullMatrix[0].slice(1, -1);
+    // compute statistics
+    const actual = fullMatrix.slice(1, -1).map(a => a.slice(-1)[0]);
+    const predicted = fullMatrix.slice(-1)[0].slice(1, -1);
+    const classes = computeClassStats({ count, matrix, labels, actual, predicted });
+    const macro = computeMacroStats({ count, classes });
+    const micro = computeMicroStats({ count, classes });
+    // we have everything now :)
+    return { count, matrix, classes, stats: { micro, macro } };
+  }
   default:
     return state;
   }

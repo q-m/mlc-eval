@@ -4,7 +4,8 @@ import { Well, Row, Col, Panel, Table } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import './Summary.css'
 
-const pct = x => ( isNaN(x) ? x : ((x * 100).toFixed(1) + '%'));
+const pct = x => ( isNaN(x) ? null : ((x * 100).toPrecision(3) + '%'));
+const flt = f => ( isNaN(f) ? null : f.toPrecision(2));
 
 class ModelParams extends PureComponent {
   render() {
@@ -29,24 +30,21 @@ class ModelParams extends PureComponent {
 
 class CategoryStats extends PureComponent {
   render() {
+    const { stats: { micro, macro } } = this.props;
     return (
       <Table className='CategoryStats no-head'>
         <tbody>
-          <tr><th>Accuracy</th><td><tt>{ pct(this._getAccuracy()) || <Qm />}</tt></td></tr>
+          <tr><th>Recall   </th><td>{ pct(micro.recall)    || ''}</td><td>{ pct(macro.recall)    || ''}</td></tr>
+          <tr><th>Precision</th><td>{ pct(micro.precision) || ''}</td><td>{ pct(macro.precision) || ''}</td></tr>
+          <tr><th>Accuracy </th><td>{ pct(micro.accuracy)  || ''}</td><td>{ pct(macro.accuracy)  || ''}</td></tr>
+          <tr><th>F1-score </th><td>{ flt(micro.f1)        || ''}</td><td>{ flt(macro.f1)        || ''}</td></tr>
+          <tr><th>MCC-score</th><td>{ flt(micro.mcc)       || ''}</td><td>{ flt(macro.mcc)       || ''}</td></tr>
         </tbody>
+        <tfoot>
+          <tr><td></td><th>micro avg.</th><th>macro avg.</th></tr>
+        </tfoot>
       </Table>
     );
-  }
-
-  // @todo move to separate stats module e.g. using reselect
-  _getAccuracy() {
-    const { confusion } = this.props;
-    if (!confusion[0]) return;
-    const nItems = confusion.slice(-1)[0].slice(-1)[0];
-    const nSuccess = confusion.slice(1, -1).reduce((r,row,i) => (
-      r + row[i + 1]
-    ), 0);
-    return 1.0 * nSuccess / nItems;
   }
 }
 
@@ -55,15 +53,14 @@ const Qm = ({dot}) => (<span className='spinning text-muted inline-block'>{dot ?
 class Summary extends PureComponent {
   render() {
     const { confusion, labels, files, model } = this.props;
-    const usedLabels = confusion[0] ? confusion[0].length - 2 : <Qm />;
+    const usedLabels = confusion.classes.length;
     const totalLabels = labels.size;
-    const nItems = confusion.length ? confusion.slice(-1)[0].slice(-1)[0] : <Qm />;
     return (
       <div className='Summary container'>
         <Well>
           <h2>Classification evaluation <small>summary</small></h2>
           <p>
-            You have trained with <b>{nItems}</b> samples
+            You have trained with <b>{confusion.count || <Qm />}</b> samples
             in <b>{usedLabels}</b> categories
             {totalLabels && <span> (out of <b>{totalLabels}</b> defined)</span>}.
           </p>
@@ -80,8 +77,8 @@ class Summary extends PureComponent {
           </Col>
           <Col sm={4}>
             <Panel header={<h3>Statistics</h3>}>
-              {confusion.length
-                ? <CategoryStats confusion={confusion} />
+              {confusion.count
+                ? <CategoryStats stats={confusion.stats} />
                 : files.files.confusion
                 ? <em className='text-muted'>Loading confusion matrix <Qm dot /></em>
                 : <em className='text-muted'>Please load a confusion matrix.</em>}
