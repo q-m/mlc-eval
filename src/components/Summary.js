@@ -2,10 +2,9 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Well, Row, Col, Panel, Table } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { STAT_LABELS } from '../store/confusion'
+import { getStatRenderer } from './Stat'
 import './Summary.css'
-
-const pct = x => ( isNaN(x) ? null : ((x * 100).toPrecision(3) + '%'));
-const flt = f => ( isNaN(f) ? null : f.toPrecision(2));
 
 class ModelParams extends PureComponent {
   render() {
@@ -34,11 +33,13 @@ class CategoryStats extends PureComponent {
     return (
       <Table className='CategoryStats no-head'>
         <tbody>
-          <tr><th>Recall   </th><td>{ pct(micro.recall)    || ''}</td><td>{ pct(macro.recall)    || ''}</td></tr>
-          <tr><th>Precision</th><td>{ pct(micro.precision) || ''}</td><td>{ pct(macro.precision) || ''}</td></tr>
-          <tr><th>Accuracy </th><td>{ pct(micro.accuracy)  || ''}</td><td>{ pct(macro.accuracy)  || ''}</td></tr>
-          <tr><th>F1-score </th><td>{ flt(micro.f1)        || ''}</td><td>{ flt(macro.f1)        || ''}</td></tr>
-          <tr><th>MCC-score</th><td>{ flt(micro.mcc)       || ''}</td><td>{ flt(macro.mcc)       || ''}</td></tr>
+          {Object.keys(STAT_LABELS).map(stat => (
+            <tr key={stat}>
+              <th>{STAT_LABELS[stat]}</th>
+              <td>{getStatRenderer(stat, 1, 2)(micro[stat])}</td>
+              <td>{getStatRenderer(stat, 1, 2)(macro[stat])}</td>
+            </tr>
+          ))}
         </tbody>
         <tfoot>
           <tr><td></td><th>micro avg.</th><th>macro avg.</th></tr>

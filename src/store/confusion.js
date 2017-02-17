@@ -5,9 +5,14 @@ export function load(url) {
     fetch(url)
       .then(response => response.text())
       .then(data => dispatch({type: 'CONFUSION_LOAD', payload: data}))
+      // .then(data => dispatch(sort('recall')))
       .then(data => dispatch({type: 'FILE_LOADED', payload: {id: 'confusion'}}))
       .catch(err => console.log(err));
   };
+}
+
+export function sort(key, reverse = true) {
+  return {type: 'CONFUSION_SORT', payload: {key, reverse: !!reverse}};
 }
 
 const initialState = {
@@ -20,14 +25,22 @@ const initialState = {
   },
 };
 
+export const STAT_LABELS = {
+  recall:    'Recall',
+  precision: 'Precision',
+  accuracy:  'Accuracy',
+  f1:        'F1-score',
+  mcc:       'MCC-score',
+};
+
 // @see https://en.wikipedia.org/wiki/Confusion_matrix
 // @see http://chrisalbon.com/machine-learning/precision_recall_and_F1_scores.html
 function computeDerivedStats({ tp, fn, fp, tn }) {
     const accuracy  = 1.0 * (tp + tn) / (tp + fn + fp + tn);
-    const precision = 1.0 * tp / (tp + fp);
-    const recall    = 1.0 * tp / (tp + fn);
+    const precision = 1.0 * tp / (tp + fp) || 0;
+    const recall    = 1.0 * tp / (tp + fn) || 0;
     const f1        = 2.0 * tp / (2 * tp + fp + fn);
-    const mcc       = (tp * tn - fp * fn) / Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+    const mcc       = (tp * tn - fp * fn) / Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)) || 0;
     return { accuracy, precision, recall, f1, mcc };
 }
 
@@ -85,6 +98,23 @@ export function reducer(state = initialState, action) {
     // we have everything now :)
     return { count, matrix, classes, stats: { micro, macro } };
   }
+  /*
+  case 'CONFUSION_SORT': {
+    // @todo fix this, indices are mixed up somehow
+    // first create sorted array with position and sort-value
+    const { key, reverse } = action.payload;
+    const sortmul = reverse ? -1 : 1;
+    const mapping = state.classes.map((c,i) => ({ i, v: c[key] }));
+    mapping.sort((a,b) => (a.v - b.v) * sortmul);
+    // then sort labels and matrix
+    const classes = mapping.map(m => ({ ...state.classes[m.i], idx: m.i }));
+    const matrix = mapping.map(m => {
+      const row = state.matrix[m.i];
+      return mapping.map(n => row[n.i]);
+    });
+    return { ...state, matrix, classes };
+  }
+  */
   default:
     return state;
   }

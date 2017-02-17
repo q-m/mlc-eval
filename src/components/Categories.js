@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Badge, Row, Col, ListGroup, ListGroupItem, Panel } from 'react-bootstrap'
+import { Badge, Row, Col, DropdownButton, ListGroup, ListGroupItem, MenuItem, Panel } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { sort as configSort } from '../store/config'
+import { STAT_LABELS } from '../store/confusion'
+import { getStatRenderer } from './Stat'
 import './Categories.css'
 
 class _CategoryItem extends PureComponent {
@@ -10,8 +13,8 @@ class _CategoryItem extends PureComponent {
     return (
       <div>
         {labels.get(id) || id}
-        <Badge style={{marginRight: '3.2em'}} className='alert-info'>{stat}</Badge>
-        <Badge>{count}</Badge>
+        <Badge style={{marginRight: '3.2em'}}>{count}</Badge>
+        <Badge className='alert-info'>{stat}</Badge>
       </div>
     );
   }
@@ -19,18 +22,6 @@ class _CategoryItem extends PureComponent {
 const CategoryItem = connect(({ labels }) => {
   return { labels };
 })(_CategoryItem);
-
-const pct = f => (<span>{(100.0 * f).toFixed(0)}<span style={{fontSize: '60%', verticalAlign: 'middle'}}>%</span></span>);
-const flt = f => (<span>{f.toFixed(1)}</span>);
-
-// returns function for the statistics component, based on the selected statistic
-const getStatRenderer = (stat) => (
-  !stat
-  ? () => null
-  : ['accuracy', 'precision', 'recall'].includes(stat)
-  ? cls => pct(cls[stat])
-  : cls => flt(cls[stat])
-);
 
 class _CategoryList extends PureComponent {
   render() {
@@ -42,7 +33,7 @@ class _CategoryList extends PureComponent {
           {classes.map(c => (
             <LinkContainer key={c.label} to={href(c.label)}>
               <ListGroupItem bsStyle={id ? (id === c.label ? 'success' : 'warning') : null}>
-                <CategoryItem id={c.label} count={getCount(c)} stat={renderStat(c)} scope={id} />
+                <CategoryItem id={c.label} count={getCount(c)} stat={renderStat(c[stat])} scope={id} />
               </ListGroupItem>
             </LinkContainer>
           ))}
@@ -52,12 +43,12 @@ class _CategoryList extends PureComponent {
   }
 }
 // @todo move gathering data somewhere else, so that link state change doesn't trigger it
-const MainCategoryList = connect(({ confusion: { classes }, windowSize: { height } }) => {
+const MainCategoryList = connect(({ confusion: { classes }, config: {sort: {key}}, windowSize: {height} }) => {
   const getCount = c => c.tp + c.fn;
-  return { classes, getCount, containerHeight: height, stat: 'recall' };
+  return { classes, getCount, stat: key, containerHeight: height };
 })(_CategoryList);
 
-const SecondaryCategoryList = connect(({ labels, confusion, windowSize: { height } }) => {
+const SecondaryCategoryList = connect(({ labels, confusion, windowSize: {height} }) => {
   return { labels, confusion, containerHeight: height }
 }, null, ({ labels, confusion, containerHeight }, dispatchProps, ownProps) => {
   const cls = confusion.classes.find(l => l.label === ownProps.id) || {};
@@ -70,12 +61,23 @@ const SecondaryCategoryList = connect(({ labels, confusion, windowSize: { height
 
 class Categories extends PureComponent {
   render() {
-    const { dispatch, params: { ida, idb } } = this.props;
+    const { sort, dispatch, params: { ida, idb } } = this.props;
     return (
       <Row className='Categories'>
         <Col sm={6} md={3}>
           <MainCategoryList
-            header='Actual'
+            header={
+              <div>
+                <div className='pull-right'>
+                  <DropdownButton id='sort' bsStyle='info' bsSize='xsmall' title={STAT_LABELS[sort.key]} pullRight>
+                    {Object.keys(STAT_LABELS).map(stat => (
+                      <MenuItem key={stat} onClick={() => dispatch(configSort(stat, !sort.reverse))}>{STAT_LABELS[stat]}</MenuItem>
+                    ))}
+                  </DropdownButton>
+                </div>
+                Actual
+              </div>
+            }
             href={(id) => `/categories/${id}`} />
         </Col>
         <Col sm={6} md={3}>
@@ -93,4 +95,6 @@ class Categories extends PureComponent {
   }
 }
 
-export default connect()(Categories);
+export default connect(
+  ({ config: { sort }}) => ({ sort })
+)(Categories);
