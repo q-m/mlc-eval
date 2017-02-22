@@ -23,7 +23,7 @@ import './index.css'
 function loadDefault() {
   let baseUrl = (process.env.PUBLIC_URL || '') + '/example/iris';
   if (window.location.search.startsWith('?baseUrl=')) {
-    baseUrl = window.location.search.slice(10);
+    baseUrl = decodeURIComponent(window.location.search.slice(9));
   }
 
   store.dispatch(loadConfusion(baseUrl + '.cm'));
