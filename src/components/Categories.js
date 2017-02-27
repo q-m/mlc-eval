@@ -13,7 +13,7 @@ class _CategoryItem extends PureComponent {
     return (
       <div>
         {labels.get(id) || id}
-        <Badge style={{marginRight: '3.2em'}}>{count}</Badge>
+        <Badge style={stat ? {marginRight: '3.5em'} :null}>{count}</Badge>
         <Badge className='alert-info'>{stat}</Badge>
       </div>
     );
