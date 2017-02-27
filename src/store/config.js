@@ -1,7 +1,7 @@
 
-export function sort(key, reverse = true) {
+export function sort(key, reverse = null) {
   return (dispatch) => {
-    dispatch({ type: 'CONFIG_UPDATE_SORT', payload: { key, reverse: !!reverse } });
+    dispatch({ type: 'CONFIG_UPDATE_SORT', payload: { key, reverse } });
     // dispatch({ type: 'CONFUSION_SORT', payload: { key, reverse: !!reverse } });
   };
 }
@@ -16,7 +16,10 @@ const initialState = {
 export function reducer(state = initialState, action) {
   switch(action.type) {
   case 'CONFIG_UPDATE_SORT':
-    return { ...state, sort: { ...state.sort, ...action.payload } };
+    const payload = action.payload;
+    const reverse = payload.reverse !== null ? payload.reverse
+                      : (payload.key === state.sort.key) !== state.sort.reverse;
+    return { ...state, sort: { ...payload, reverse } };
   default:
     return state;
   }

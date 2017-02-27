@@ -43,9 +43,12 @@ class _CategoryList extends PureComponent {
   }
 }
 // @todo move gathering data somewhere else, so that link state change doesn't trigger it
-const MainCategoryList = connect(({ confusion: { classes }, config: {sort: {key}}, windowSize: {height} }) => {
+const MainCategoryList = connect(({ confusion: { classes }, config: { sort }, windowSize: { height } }) => {
   const getCount = c => c.tp + c.fn;
-  return { classes, getCount, stat: key, containerHeight: height };
+  return { classes, getCount, stat: sort.key, sort, containerHeight: height };
+}, null, ({ classes, sort, ...state }, dispatchProps, ownProps) => {
+  const sortedClasses = classes.slice().sort((a,b) => (sort.reverse ? -1 : 1) * (a[sort.key] - b[sort.key]));
+  return { classes: sortedClasses, ...state, ...dispatchProps, ...ownProps };
 })(_CategoryList);
 
 const SecondaryCategoryList = connect(({ labels, confusion, windowSize: {height} }) => {
@@ -71,7 +74,7 @@ class Categories extends PureComponent {
                 <div className='pull-right'>
                   <DropdownButton id='sort' bsStyle='info' bsSize='xsmall' title={STAT_LABELS[sort.key]} pullRight>
                     {Object.keys(STAT_LABELS).map(stat => (
-                      <MenuItem key={stat} onClick={() => dispatch(configSort(stat, !sort.reverse))}>{STAT_LABELS[stat]}</MenuItem>
+                      <MenuItem key={stat} onClick={() => dispatch(configSort(stat))}>{STAT_LABELS[stat]}</MenuItem>
                     ))}
                   </DropdownButton>
                 </div>
