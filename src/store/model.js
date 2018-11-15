@@ -46,7 +46,7 @@ export function reducer(state = initialState, action) {
       const key = l.slice(0, i);
       let value = l.slice(i + 1);
       if (value) {
-        if (key === 'label' || key === 'nr_sv') {
+        if (key === 'label' || key === 'nr_sv' || key === 'num_words' || key === 'num_classes' || key === 'total_params') {
           value = value.split(' ').map(s => parseInt(s, 10));
         }
         if (key === 'rho') {
