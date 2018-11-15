@@ -3,7 +3,7 @@
   "description": "user-interface for evaluating machine learning classification results",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://developers.thequestionmark.org/mlc-eval",
+  "homepage": "https://developers.thequestionmark.org/mlc-eval",
   "devDependencies": {
     "gh-pages": "^2.0.0",
     "react-scripts": "2.1.1"

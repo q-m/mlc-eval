@@ -11,7 +11,7 @@ The current focus is on [LIBSVM][] and [LIBLINEAR][], which provide a convenient
 with [support vector machines](https://en.wikipedia.org/wiki/Support_vector_machine) on
 large datasets, but the approach should be applicable to other software and methods as well.
 
-Visit the [online app](https://q-m.github.io/mlc-eval/) directly.
+Visit the [online app](https://developers.thequestionmark.org/mlc-eval/) directly.
 
 
 # Features
