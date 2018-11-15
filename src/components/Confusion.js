@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Table from 'responsive-fixed-data-table'
-import { Column, Cell } from 'fixed-data-table';
+import { Column, Cell } from 'fixed-data-table-2';
+import Table from './ResponsiveFixedDataTable';
+import 'fixed-data-table-2/dist/fixed-data-table.css'
 import './Confusion.css'
 
 const MatrixCell = ({count, sum, self, ...props}) => {

@@ -28,8 +28,9 @@ class _CategoryList extends PureComponent {
     const { id, header, classes, getCount, href, stat, containerHeight, dispatch } = this.props;
     const renderStat = getStatRenderer(stat);
     return (
-      <Panel header={header}>
-        <ListGroup className='CategoryList' style={{maxHeight: containerHeight - 92}} fill>
+      <Panel>
+        <Panel.Heading>{header}</Panel.Heading>
+        <ListGroup className='CategoryList' style={{maxHeight: containerHeight - 92}}>
           {classes.map(c => (
             <LinkContainer key={c.label} to={href(c.label)}>
               <ListGroupItem bsStyle={id ? (id === c.label ? 'success' : 'warning') : null}>
@@ -64,7 +65,7 @@ const SecondaryCategoryList = connect(({ labels, confusion, windowSize: {height}
 
 class Categories extends PureComponent {
   render() {
-    const { sort, dispatch, params: { ida, idb } } = this.props;
+    const { sort, dispatch, match: { params: { ida, idb } } } = this.props;
     return (
       <Row className='Categories'>
         <Col sm={6} md={3}>

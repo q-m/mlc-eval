@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Well, Row, Col, Panel, Table } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
 import { STAT_LABELS } from '../store/confusion'
 import { getStatRenderer } from './Stat'
 import './Summary.css'

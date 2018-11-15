@@ -7,7 +7,7 @@ import { load as loadConfusion } from './store/confusion'
 import { load as loadLabels } from './store/labels'
 import { load as loadModel } from './store/model'
 
-import { IndexRoute, Router, Route, hashHistory } from 'react-router'
+import { HashRouter as Router, Route } from 'react-router-dom'
 import App from './components/App'
 import Summary from './components/Summary'
 import Categories from './components/Categories'
@@ -15,7 +15,6 @@ import Confusion from './components/Confusion'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap/dist/css/bootstrap-theme.css'
-import 'fixed-data-table/dist/fixed-data-table.css'
 import './index.css'
 
 // load initial data
@@ -35,14 +34,12 @@ loadDefault();
 
 ReactDOM.render((
   <Provider store={store}>
-    <Router history={hashHistory}>
-      <Route path='/' component={App}>
-        <IndexRoute component={Summary} />
-        <Route path='categories(/:ida)' component={Categories}>
-          <Route path=':idb' component={Categories} />
-        </Route>
-        <Route path='confusion-matrix' component={Confusion} />
-      </Route>
+    <Router>
+      <App>
+        <Route path='/' exact component={Summary} />
+        <Route path='/categories/:ida?/:idb?' component={Categories} />
+        <Route path='/confusion-matrix' component={Confusion} />
+      </App>
     </Router>
   </Provider>),
   document.getElementById('root')
