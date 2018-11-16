@@ -67,23 +67,29 @@ class Summary extends PureComponent {
         </Well>
         <Row>
           <Col sm={4}>
-            <Panel header={<h3>Model parameters</h3>}>
-              {model.size > 0
-                ? <ModelParams model={model} />
-                : files.files.model
-                ? <em className='text-muted'>Loading model <Qm dot /></em>
-                : <em className='text-muted'>Please load a model.</em>}
-              </Panel>
+            <Panel>
+              <Panel.Heading><h4>Model parameters</h4></Panel.Heading>
+              <Panel.Body>
+                {model.size > 0
+                  ? <ModelParams model={model} />
+                  : files.files.model
+                  ? <em className='text-muted'>Loading model <Qm dot /></em>
+                  : <em className='text-muted'>Please load a model.</em>}
+              </Panel.Body>
+            </Panel>
           </Col>
           <Col sm={4}>
-            <Panel header={<h3>Statistics</h3>}>
-              {confusion.count
-                ? <CategoryStats stats={confusion.stats} />
-                : files.files.confusion
-                ? <em className='text-muted'>Loading confusion matrix <Qm dot /></em>
-                : <em className='text-muted'>Please load a confusion matrix.</em>}
-              </Panel>
-            </Col>
+            <Panel>
+              <Panel.Heading><h4>Statistics</h4></Panel.Heading>
+              <Panel.Body>
+                {confusion.count
+                  ? <CategoryStats stats={confusion.stats} />
+                  : files.files.confusion
+                  ? <em className='text-muted'>Loading confusion matrix <Qm dot /></em>
+                  : <em className='text-muted'>Please load a confusion matrix.</em>}
+              </Panel.Body>
+            </Panel>
+          </Col>
         </Row>
       </div>
     );
