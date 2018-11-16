@@ -25,8 +25,10 @@ const CategoryItem = connect(({ labels }) => {
 
 class _CategoryList extends PureComponent {
   render() {
-    const { id, header, classes, getCount, href, stat, containerHeight, dispatch } = this.props;
+    const { id, header, confusion, getClasses, href, sort, containerHeight, dispatch } = this.props;
+    const stat = sort.key;
     const renderStat = getStatRenderer(stat);
+    const { classes, getCount } = getClasses(confusion, sort, id);
     return (
       <Panel>
         <Panel.Heading>{header}</Panel.Heading>
@@ -43,24 +45,25 @@ class _CategoryList extends PureComponent {
     );
   }
 }
-// @todo move gathering data somewhere else, so that link state change doesn't trigger it
-const MainCategoryList = connect(({ confusion: { classes }, config: { sort }, windowSize: { height } }) => {
+
+function getClassesMain(confusion, sort, id) {
   const getCount = c => c.tp + c.fn;
-  return { classes, getCount, stat: sort.key, sort, containerHeight: height };
-}, null, ({ classes, sort, ...state }, dispatchProps, ownProps) => {
-  const sortedClasses = classes.slice().sort((a,b) => (sort.reverse ? -1 : 1) * (a[sort.key] - b[sort.key]));
-  return { classes: sortedClasses, ...state, ...dispatchProps, ...ownProps };
+  const classes = confusion.classes.slice().sort((a,b) => (sort.reverse ? -1 : 1) * (a[sort.key] - b[sort.key]));
+  return { classes, getCount };
+}
+const MainCategoryList = connect(({ confusion, config: { sort }, windowSize: { height } }) => {
+  return { confusion, getClasses: getClassesMain, sort, containerHeight: height };
 })(_CategoryList);
 
-const SecondaryCategoryList = connect(({ labels, confusion, windowSize: {height} }) => {
-  return { labels, confusion, containerHeight: height }
-}, null, ({ labels, confusion, containerHeight }, dispatchProps, ownProps) => {
-  const cls = confusion.classes.find(l => l.label === ownProps.id) || {};
+function getClassesSecondary(confusion, sort, id) {
+  const cls = confusion.classes.find(l => l.label === id) || {};
   const row = confusion.matrix[cls.idx] || [];
   const getCount = c => row[c.idx];
-  const classes = confusion.classes.filter((c,i) => row[i] > 0);
-  classes.sort((a,b) => (-1 * (row[a.idx] - row[b.idx])));
-  return { classes, getCount, containerHeight, ...dispatchProps, ...ownProps };
+  const classes = confusion.classes.filter((c,i) => row[i] > 0).sort((a,b) => (-1 * (row[a.idx] - row[b.idx])));
+  return { classes, getCount };
+}
+const SecondaryCategoryList = connect(({ labels, confusion, config: { sort }, windowSize: {height} }) => {
+  return { labels, confusion, getClasses: getClassesSecondary, sort, containerHeight: height };
 })(_CategoryList);
 
 class Categories extends PureComponent {
