@@ -65,7 +65,7 @@ const SecondaryCategoryList = connect(({ labels, confusion, windowSize: {height}
 
 class Categories extends PureComponent {
   render() {
-    const { sort, dispatch, match: { params: { ida, idb } } } = this.props;
+    const { sort, dispatch, match: { params: { ctrue, cpred } } } = this.props;
     return (
       <Row className='Categories'>
         <Col sm={6} md={3}>
@@ -85,14 +85,14 @@ class Categories extends PureComponent {
             href={(id) => `/categories/${id}`} />
         </Col>
         <Col sm={6} md={3}>
-          {ida
-            ? <SecondaryCategoryList id={parseInt(ida, 10)}
-                header='Predicted'
-                href={(id) => `/categories/${ida}/${id}`} />
-            : null}
+          {ctrue &&
+            <SecondaryCategoryList id={parseInt(ctrue, 10)}
+              header='Predicted'
+              href={(id) => `/categories/${ctrue}/${id}`} />}
         </Col>
         <Col sm={12} md={6}>
-
+          {ctrue && cpred &&
+            <CategoryTokens ctrue={parseInt(ctrue, 10)} cpred={parseInt(cpred, 10)} />}
         </Col>
       </Row>
     );
@@ -102,3 +102,25 @@ class Categories extends PureComponent {
 export default connect(
   ({ config: { sort }}) => ({ sort })
 )(Categories);
+
+class _CategoryTokens extends PureComponent {
+  render() {
+    const { containerHeight, features, ctrue, cpred } = this.props;
+    const cat_tokens = (features.get(ctrue) || new Map()).get(cpred) || [];
+    return (
+      <Panel>
+        <Panel.Heading>Training features</Panel.Heading>
+        <ListGroup style={{maxHeight: containerHeight - 92}}>
+          {cat_tokens.map((c,i) => (
+            <ListGroupItem key={i}>
+              {c[1]}
+            </ListGroupItem>
+          ))}
+        </ListGroup>
+      </Panel>
+    );
+  }
+}
+const CategoryTokens = connect(
+  ({ features, windowSize: { height } }) => ({ features, containerHeight: height })
+)(_CategoryTokens);

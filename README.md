@@ -7,9 +7,10 @@ useful to check and improve. For larger datasets, existing tools remain limited.
 This project provides a web-based user-interface for looking into classification results,
 which should also work with thousands of classes.
 
-The current focus is on [LIBSVM][] and [LIBLINEAR][], which provide a convenient way to work
+The initial focus was on [LIBSVM][] and [LIBLINEAR][], which provide a convenient way to work
 with [support vector machines](https://en.wikipedia.org/wiki/Support_vector_machine) on
-large datasets, but the approach should be applicable to other software and methods as well.
+large datasets, but other software and methods are also supported (as long as the relevant
+files are generated).
 
 Visit the [online app](https://developers.thequestionmark.org/mlc-eval/) directly.
 
@@ -28,11 +29,12 @@ in `public/data/`, and add `?baseUrl=/data/data` to the url.
 
 # Run
 
-The easiest way would be to visit the [hosted app](https://q-m.github.io/mlc-eval/) directly.
+The easiest way would be to visit the [hosted app](https://developers.thequestionmark.org/mlc-eval/) directly.
 
-To run this tool yourself, you'll need [Ruby][] to generate the confusion matrix (see below), and
-[Node.js][] to run the application. To run the application yourself:
+To run this tool yourself, you'll need [Node.js][] to run the web application. For generating the
+confusion matrix for LIBSVM/LIBLINEAR (see below), you need [Ruby][].
 
+To run the web application yourself:
 ```
 $ npm install
 $ npm start
@@ -46,16 +48,15 @@ A web browser window will open on `http://localhost:3000/` .
 Classification data is read from the following files, currently served from `public/data/`:
 
 - `data.cm` - confusion matrix
-- `data.labels` - label names, to show class names instead of numbers _(optional)_
-- `data.train` - training data file _(not yet used)_
-- `data.tokens` - feature names, to show feature names instead of numbers _(not yet used)_
+- `data.labels` - label names, to show class names instead of numbers _(optional but recommended)_
 - `data.model` - the trained model, only the header is read to show properties _(optional)_
+- `data.feat` - training data features, for showing data behind trained classes _(optional)_
 
-Only `data.train` and `data.model` are standard [LIBSVM][] files. A tool for generating the
-confusion matrix is part of this project (see below), labels and tokens you'll need
-to generate yourself. See example for file format.
+These files need to be created by your classification software. [LIBSVM][] generates `data.model`,
+a tool for generating the confusion matrix is part of this project (see below). See [file formats](#file-formats)
+below for an explanation (as well as the example in `public/example`).
 
-## Generating a confusion matrix
+## Generating a confusion matrix for SVM
 
 A confusion matrix can be generated after doing cross-validation on the training data.
 This can be done with the supplied scripts `libsvm-cm.rb` or `liblinear-cm.rb` (you'll need [Ruby][]).
@@ -73,7 +74,9 @@ $ gem install liblinear-ruby
 $ ruby liblinear-cm.rb public/example/data.train public/example/data.cm
 ```
 
-### File format
+### File formats
+
+#### `data.cm`
 
 For reference, the confusion matrix file used here has the following format. Consider four
 classes, `1`, `2`, `3` and `4`, with 6 training items each. Predictions are on the x-axis,
@@ -87,13 +90,44 @@ Sums for each line and column are at right and bottom.
     4 1 0 2 3 6
     + 7 4 7 6 24
 
+#### `data.labels`
+
+Consists of class labels in numeric format and their human-readable representation.
+
+    1 Setosa
+    2 Versicolour
+    3 Virginica
+
+#### `data.model`
+
+The header of this file consists of parameters, which are shown as summary. A line
+containing `SV` indicates the last line. A LIBSVM model file follows this format,
+but other software could generate this (without model data) to show parameters.
+
+#### `data.feat`
+
+Each line of this file contains a training item, with an item id, true class
+and the predicted class; the remainder of the line is a text-representation
+of the item's features.
+
+For example, the following line is for a training item with id 1337, has class
+number 5, the predicted class is 6, and the features are `guide` and `galaxy`
+
+    1337 5 6 guide galaxy
+
+In this case, the algorithm is likely using a bag of words, so it makes sense
+to just list the words extracted from the training source data. This is likely
+to be different for other classification problems.
+
+The `id` is there to link to the source data (to be implemented), so that you
+can see where feature extraction may need to be improved.
 
 # Roadmap
 
 - include example data
 - allow loading of remote urls
 - allow browsing and loading of local files
-- show item details in category overview
+- link features using url template
 - add more metrics, also for each class
 
 # [License](LICENSE.md)

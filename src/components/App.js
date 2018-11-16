@@ -9,6 +9,7 @@ const FILE_DESC = {
   confusion: 'Confusion matrix',
   items: 'Training data',
   model: 'Model properties',
+  features: 'Training features',
 };
 
 const FileIcon = ({ status }) => (

@@ -6,6 +6,7 @@ import store from './store/index'
 import { load as loadConfusion } from './store/confusion'
 import { load as loadLabels } from './store/labels'
 import { load as loadModel } from './store/model'
+import { load as loadFeatures } from './store/features'
 
 import { HashRouter as Router, Route } from 'react-router-dom'
 import App from './components/App'
@@ -28,6 +29,7 @@ function loadDefault() {
   store.dispatch(loadConfusion(baseUrl + '.cm'));
   store.dispatch(loadLabels(baseUrl + '.labels'));
   store.dispatch(loadModel(baseUrl + '.model'));
+  store.dispatch(loadFeatures(baseUrl + '.features'));
 }
 loadDefault();
 
@@ -37,7 +39,7 @@ ReactDOM.render((
     <Router>
       <App>
         <Route path='/' exact component={Summary} />
-        <Route path='/categories/:ida?/:idb?' component={Categories} />
+        <Route path='/categories/:ctrue?/:cpred?' component={Categories} />
         <Route path='/confusion-matrix' component={Confusion} />
       </App>
     </Router>
