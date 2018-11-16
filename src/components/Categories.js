@@ -71,7 +71,7 @@ class Categories extends PureComponent {
     const { sort, dispatch, match: { params: { ctrue, cpred } } } = this.props;
     return (
       <Row className='Categories'>
-        <Col sm={6} md={3}>
+        <Col sm={4} md={3}>
           <MainCategoryList
             header={
               <div>
@@ -87,13 +87,13 @@ class Categories extends PureComponent {
             }
             href={(id) => `/categories/${id}`} />
         </Col>
-        <Col sm={6} md={3}>
+        <Col sm={4} md={3}>
           {ctrue &&
             <SecondaryCategoryList id={parseInt(ctrue, 10)}
               header='Predicted'
               href={(id) => `/categories/${ctrue}/${id}`} />}
         </Col>
-        <Col sm={12} md={6}>
+        <Col sm={4} md={6}>
           {ctrue && cpred &&
             <CategoryTokens ctrue={parseInt(ctrue, 10)} cpred={parseInt(cpred, 10)} />}
         </Col>
@@ -113,7 +113,7 @@ class _CategoryTokens extends PureComponent {
     return (
       <Panel>
         <Panel.Heading>Training features</Panel.Heading>
-        <ListGroup style={{maxHeight: containerHeight - 92}}>
+        <ListGroup className='CategoryList' style={{maxHeight: containerHeight - 92}}>
           {cat_tokens.map((c,i) => (
             <ListGroupItem key={i}>
               {c[1]}

@@ -1,6 +1,10 @@
 .Categories {
 }
 
+.Categories.row {
+  margin-right: 0; /* to fix full-width row */
+}
+
 .Categories > * {
   padding-right: 0 !important; /* sorry ... */
 }
