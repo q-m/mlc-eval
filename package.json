@@ -12,6 +12,7 @@
     "bootstrap": "^3.3.7",
     "fixed-data-table-2": "^1.0.0-beta.5",
     "prop-types": "^15.6.2",
+    "qs": "^6.5.2",
     "react": "^16.6.3",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.6.3",

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Badge, Row, Col, DropdownButton, ListGroup, ListGroupItem, MenuItem, Panel } from 'react-bootstrap'
+import { Badge, Button, Row, Col, DropdownButton, Glyphicon, ListGroup, ListGroupItem, MenuItem, Panel } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { sort as configSort } from '../store/config'
 import { STAT_LABELS } from '../store/confusion'
@@ -68,7 +68,7 @@ const SecondaryCategoryList = connect(({ labels, confusion, config: { sort }, wi
 
 class Categories extends PureComponent {
   render() {
-    const { sort, dispatch, match: { params: { ctrue, cpred } } } = this.props;
+    const { sort, dispatch, match: { params: { ctrue, cpred } }, itemUrlTemplate } = this.props;
     return (
       <Row className='Categories'>
         <Col sm={4} md={3}>
@@ -95,7 +95,9 @@ class Categories extends PureComponent {
         </Col>
         <Col sm={4} md={6}>
           {ctrue && cpred &&
-            <CategoryTokens ctrue={parseInt(ctrue, 10)} cpred={parseInt(cpred, 10)} />}
+            <CategoryTokens
+              itemUrlTemplate={itemUrlTemplate}
+              ctrue={parseInt(ctrue, 10)} cpred={parseInt(cpred, 10)} />}
         </Col>
       </Row>
     );
@@ -103,12 +105,12 @@ class Categories extends PureComponent {
 }
 
 export default connect(
-  ({ config: { sort }}) => ({ sort })
+  ({ config: { sort, itemUrlTemplate }}) => ({ sort, itemUrlTemplate })
 )(Categories);
 
 class _CategoryTokens extends PureComponent {
   render() {
-    const { containerHeight, features, ctrue, cpred } = this.props;
+    const { containerHeight, features, ctrue, cpred, itemUrlTemplate } = this.props;
     const cat_tokens = (features.get(ctrue) || new Map()).get(cpred) || [];
     return (
       <Panel>
@@ -116,6 +118,10 @@ class _CategoryTokens extends PureComponent {
         <ListGroup className='CategoryList' style={{maxHeight: containerHeight - 92}}>
           {cat_tokens.map((c,i) => (
             <ListGroupItem key={i}>
+              {itemUrlTemplate && [
+                <a href={itemUrlTemplate.replace(':id', c[0])} style={{fontSize: '75%'}}>
+                  <Glyphicon glyph='new-window' />
+                </a>, ' ']}
               {c[1]}
             </ListGroupItem>
           ))}

@@ -26,6 +26,10 @@ By default, the widely used iris dataset will be shown. It isn't a very good exa
 this tool, with just three classes. To load your own dataset, put your own `data.cm` and other files
 in `public/data/`, and add `?baseUrl=/data/data` to the url.
 
+If you want to view data behind the training features in `data.features`, you can use the first
+column in that file to indicate an id. Supply a query parameter `itemUrlTemplate=http://.../:id`
+to this web application, and the _Categories_ view will show a link in the _Training features_
+pane. You can use this to improve your training data, for example.
 
 # Run
 
@@ -50,7 +54,7 @@ Classification data is read from the following files, currently served from `pub
 - `data.cm` - confusion matrix
 - `data.labels` - label names, to show class names instead of numbers _(optional but recommended)_
 - `data.model` - the trained model, only the header is read to show properties _(optional)_
-- `data.feat` - training data features, for showing data behind trained classes _(optional)_
+- `data.features` - training data features, for showing data behind trained classes _(optional)_
 
 These files need to be created by your classification software. [LIBSVM][] generates `data.model`,
 a tool for generating the confusion matrix is part of this project (see below). See [file formats](#file-formats)
@@ -104,7 +108,7 @@ The header of this file consists of parameters, which are shown as summary. A li
 containing `SV` indicates the last line. A LIBSVM model file follows this format,
 but other software could generate this (without model data) to show parameters.
 
-#### `data.feat`
+#### `data.features`
 
 Each line of this file contains a training item, with an item id, true class
 and the predicted class; the remainder of the line is a text-representation
@@ -119,15 +123,15 @@ In this case, the algorithm is likely using a bag of words, so it makes sense
 to just list the words extracted from the training source data. This is likely
 to be different for other classification problems.
 
-The `id` is there to link to the source data (to be implemented), so that you
-can see where feature extraction may need to be improved.
+The `id` is there to link to the source data, so that you can see where feature extraction
+may need to be improved. The placeholder `:id` in the `itemUrlTemplate` query parameter
+will be substituted by this number for each item in the _Categories_ view.
 
 # Roadmap
 
 - include example data
 - allow loading of remote urls
 - allow browsing and loading of local files
-- link features using url template
 - add more metrics, also for each class
 
 # [License](LICENSE.md)
