@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Badge, Button, Row, Col, DropdownButton, Glyphicon, ListGroup, ListGroupItem, MenuItem, Panel } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import List from 'react-virtualized/dist/commonjs/List'
 import { sort as configSort } from '../store/config'
 import { STAT_LABELS } from '../store/confusion'
 import { getStatRenderer } from './Stat'
@@ -32,14 +34,20 @@ class _CategoryList extends PureComponent {
     return (
       <Panel>
         <Panel.Heading>{header}</Panel.Heading>
-        <ListGroup className='CategoryList' style={{maxHeight: containerHeight - 92}}>
-          {classes.map(c => (
-            <LinkContainer key={c.label} to={href(c.label)}>
-              <ListGroupItem bsStyle={id ? (id === c.label ? 'success' : 'warning') : null}>
-                <CategoryItem id={c.label} count={getCount(c)} stat={renderStat(c[stat])} scope={id} />
-              </ListGroupItem>
-            </LinkContainer>
-          ))}
+        <ListGroup className='CategoryList' style={{height: containerHeight - 92}}>
+          <AutoSizer>{({width, height}) => (
+            <List height={height} width={width} rowHeight={41}
+                  rowCount={classes.length} rowRenderer={function ({index, key, style}) {
+              const c = classes[index];
+              return (
+                <LinkContainer key={key} to={href(c.label)} style={style}>
+                  <ListGroupItem bsStyle={id ? (id === c.label ? 'success' : 'warning') : null} style={{height: 41}}>
+                    <CategoryItem id={c.label} count={getCount(c)} stat={renderStat(c[stat])} scope={id} />
+                  </ListGroupItem>
+                </LinkContainer>
+              );
+            }} />
+          )}</AutoSizer>
         </ListGroup>
       </Panel>
     );
@@ -115,7 +123,7 @@ class _CategoryTokens extends PureComponent {
     return (
       <Panel>
         <Panel.Heading>Training features</Panel.Heading>
-        <ListGroup className='CategoryList' style={{maxHeight: containerHeight - 92}}>
+        <ListGroup className='CategoryListFeatures' style={{maxHeight: containerHeight - 92}}>
           {cat_tokens.map((c,i) => (
             <ListGroupItem key={i}>
               {itemUrlTemplate && [
